@@ -3,28 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SMS Profiles</title>
+<title>Nickets SMS</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Segoe UI', Arial, sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 20px; }
-h1 { text-align: center; color: #64b5f6; margin-bottom: 20px; font-size: 22px; }
-.info { text-align: center; color: #888; font-size: 12px; margin-bottom: 16px; }
-table { width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; background: #16213e; border-radius: 8px; overflow: hidden; }
-th { background: #0f3460; color: #64b5f6; padding: 12px 16px; text-align: left; font-size: 14px; }
-td { padding: 10px 16px; border-bottom: 1px solid #1a1a3e; font-size: 14px; font-family: 'Consolas', monospace; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #0d1117; color: #e6edf3; padding: 20px; }
+h1 { text-align: center; color: #58a6ff; margin-bottom: 6px; font-size: 22px; }
+.info { text-align: center; color: #8b949e; font-size: 12px; margin-bottom: 16px; }
+table { width: 100%; max-width: 500px; margin: 0 auto; border-collapse: collapse; background: #161b22; border-radius: 8px; overflow: hidden; border: 1px solid #30363d; }
+th { background: #21262d; color: #58a6ff; padding: 12px 16px; text-align: left; font-size: 13px; }
+td { padding: 10px 16px; border-bottom: 1px solid #21262d; font-size: 14px; font-family: 'Consolas', monospace; }
+.code { color: #3fb950; font-weight: bold; }
 tr:last-child td { border-bottom: none; }
-tr:hover { background: #1a2a4a; }
-.empty { text-align: center; padding: 40px; color: #666; }
-.count { text-align: center; color: #888; font-size: 12px; margin-top: 12px; }
-.refresh-btn { display: block; margin: 16px auto 0; padding: 8px 20px; background: #1565c0; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
-.refresh-btn:hover { background: #1976d2; }
+tr:hover { background: #1c2333; }
+.empty { text-align: center; padding: 40px; color: #484f58; }
+.count { text-align: center; color: #8b949e; font-size: 12px; margin-top: 12px; }
+.refresh-btn { display: block; margin: 16px auto 0; padding: 8px 20px; background: #21262d; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px; cursor: pointer; font-size: 13px; }
+.refresh-btn:hover { background: #30363d; }
 </style>
 </head>
 <body>
-<h1>SMS Profiles</h1>
+<h1>Nickets SMS</h1>
 <p class="info">Auto-refreshes every 30 seconds</p>
-<table id="tbl">
-<thead><tr><th>Profile ID</th><th>Phone Number</th></tr></thead>
+<table>
+<thead><tr><th>Number</th><th>Last Code</th></tr></thead>
 <tbody id="tbody"></tbody>
 </table>
 <p class="count" id="count"></p>
@@ -38,17 +39,17 @@ function load() {
       const tb = document.getElementById('tbody');
       tb.innerHTML = '';
       if (!data.length) {
-        tb.innerHTML = '<tr><td colspan="2" class="empty">No profiles yet</td></tr>';
+        tb.innerHTML = '<tr><td colspan="2" class="empty">No numbers yet</td></tr>';
         document.getElementById('count').textContent = '';
         return;
       }
-      data.sort((a, b) => (a.pid || '').localeCompare(b.pid || ''));
       data.forEach(row => {
         const tr = document.createElement('tr');
-        tr.innerHTML = '<td>' + (row.pid || '') + '</td><td>' + (row.number || '') + '</td>';
+        const code = row.code ? '<span class="code">' + row.code + '</span>' : '-';
+        tr.innerHTML = '<td>' + (row.number || '') + '</td><td>' + code + '</td>';
         tb.appendChild(tr);
       });
-      document.getElementById('count').textContent = data.length + ' profile(s)';
+      document.getElementById('count').textContent = data.length + ' number(s)';
     })
     .catch(() => {
       document.getElementById('tbody').innerHTML = '<tr><td colspan="2" class="empty">Error loading data</td></tr>';
