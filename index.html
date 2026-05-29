@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMS Profiles</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 20px; }
+h1 { text-align: center; color: #64b5f6; margin-bottom: 20px; font-size: 22px; }
+.info { text-align: center; color: #888; font-size: 12px; margin-bottom: 16px; }
+table { width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; background: #16213e; border-radius: 8px; overflow: hidden; }
+th { background: #0f3460; color: #64b5f6; padding: 12px 16px; text-align: left; font-size: 14px; }
+td { padding: 10px 16px; border-bottom: 1px solid #1a1a3e; font-size: 14px; font-family: 'Consolas', monospace; }
+tr:last-child td { border-bottom: none; }
+tr:hover { background: #1a2a4a; }
+.empty { text-align: center; padding: 40px; color: #666; }
+.count { text-align: center; color: #888; font-size: 12px; margin-top: 12px; }
+.refresh-btn { display: block; margin: 16px auto 0; padding: 8px 20px; background: #1565c0; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.refresh-btn:hover { background: #1976d2; }
+</style>
+</head>
+<body>
+<h1>SMS Profiles</h1>
+<p class="info">Auto-refreshes every 30 seconds</p>
+<table id="tbl">
+<thead><tr><th>Profile ID</th><th>Phone Number</th></tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+<p class="count" id="count"></p>
+<button class="refresh-btn" onclick="load()">Refresh Now</button>
+<script>
+const DATA_URL = 'https://raw.githubusercontent.com/anirudhatalmale6-alt/mlm-sms-sheet/main/data.json';
+function load() {
+  fetch(DATA_URL + '?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      const tb = document.getElementById('tbody');
+      tb.innerHTML = '';
+      if (!data.length) {
+        tb.innerHTML = '<tr><td colspan="2" class="empty">No profiles yet</td></tr>';
+        document.getElementById('count').textContent = '';
+        return;
+      }
+      data.sort((a, b) => (a.pid || '').localeCompare(b.pid || ''));
+      data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + (row.pid || '') + '</td><td>' + (row.number || '') + '</td>';
+        tb.appendChild(tr);
+      });
+      document.getElementById('count').textContent = data.length + ' profile(s)';
+    })
+    .catch(() => {
+      document.getElementById('tbody').innerHTML = '<tr><td colspan="2" class="empty">Error loading data</td></tr>';
+    });
+}
+load();
+setInterval(load, 30000);
+</script>
+</body>
+</html>
